@@ -17,25 +17,25 @@ import {
 
 export const Navbar = () => {
   const location = useLocation();
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem('theme') || 'dark';
+  });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (document.documentElement.classList.contains('dark')) {
-      setTheme('dark');
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+      root.style.colorScheme = 'dark';
     } else {
-      setTheme('light');
+      root.classList.remove('dark');
+      root.style.colorScheme = 'light';
     }
-  }, []);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const toggleTheme = () => {
-    if (theme === 'dark') {
-      setTheme('light');
-      document.documentElement.classList.remove('dark');
-    } else {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    }
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
   const navLinks = [
@@ -104,18 +104,18 @@ export const Navbar = () => {
 
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all font-bold flex items-center gap-1.5"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all font-bold flex items-center gap-1.5 cursor-pointer active:scale-95"
               aria-label="Toggle Theme"
             >
               {theme === 'dark' ? (
                 <>
                   <Sun className="w-4 h-4 text-amber-400" />
-                  <span className="text-[10px] hidden lg:inline">Light</span>
+                  <span className="text-[10px] hidden lg:inline text-amber-400 font-extrabold">Light Mode</span>
                 </>
               ) : (
                 <>
                   <Moon className="w-4 h-4 text-slate-700" />
-                  <span className="text-[10px] hidden lg:inline">Dark</span>
+                  <span className="text-[10px] hidden lg:inline text-slate-800 font-extrabold">Dark Mode</span>
                 </>
               )}
             </button>
@@ -185,17 +185,17 @@ export const Navbar = () => {
                 <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Appearance Mode</span>
                 <button
                   onClick={toggleTheme}
-                  className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 flex items-center gap-1.5"
+                  className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 cursor-pointer active:scale-95"
                 >
                   {theme === 'dark' ? (
                     <>
                       <Sun className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Light</span>
+                      <span>Light Mode</span>
                     </>
                   ) : (
                     <>
                       <Moon className="w-3.5 h-3.5 text-slate-700" />
-                      <span>Dark</span>
+                      <span>Dark Mode</span>
                     </>
                   )}
                 </button>
